@@ -12,7 +12,7 @@ import AVFoundation
 /*
  This protocol defines methods which get called when some events occures.
  */
-public protocol QRScannerCodeDelegate: class {
+public protocol QRScannerCodeDelegate: AnyObject {
     
     func qrScanner(_ controller: UIViewController, scanDidComplete result: String)
     func qrScannerDidFail(_ controller: UIViewController,  error: String)
@@ -131,9 +131,37 @@ public class QRCodeScannerController: UIViewController, AVCaptureMetadataOutputO
         //Currently only "Portraint" mode is supported
         UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
         delCnt = 0
-        prepareQRScannerView(self.view)
-        startScanningQRCode()
-        
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized: // the user has already authorized to access the camera.
+            self.prepareQRScannerView(self.view)
+            self.startScanningQRCode()
+            
+        case .notDetermined: // the user has not yet asked for camera access.
+            AVCaptureDevice.requestAccess(for: .video) { (granted) in
+                if granted { // if user has granted to access the camera.
+                    print("the user has granted to access the camera")
+                    DispatchQueue.main.async {
+                        self.prepareQRScannerView(self.view)
+                        self.startScanningQRCode()
+                    }
+                } else {
+                    print("the user has not granted to access the camera")
+                    self.dismissVC()
+                }
+            }
+            
+        case .denied:
+            print("the user has denied previously to access the camera.")
+            self.dismissVC()
+            
+        case .restricted:
+            print("the user can't give camera access due to some restriction.")
+            self.dismissVC()
+            
+        default:
+            print("something has wrong due to we can't access the camera.")
+            self.dismissVC()
+        }
     }
     
     /* This calls up methods which makes code ready for scan codes.
