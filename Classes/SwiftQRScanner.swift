@@ -131,9 +131,10 @@ public class QRCodeScannerController: UIViewController, AVCaptureMetadataOutputO
         //Currently only "Portraint" mode is supported
         UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
         delCnt = 0
+        self.prepareQRScannerView(self.view)
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized: // the user has already authorized to access the camera.
-            self.prepareQRScannerView(self.view)
+           
             self.startScanningQRCode()
             
         case .notDetermined: // the user has not yet asked for camera access.
@@ -141,7 +142,6 @@ public class QRCodeScannerController: UIViewController, AVCaptureMetadataOutputO
                 if granted { // if user has granted to access the camera.
                     print("the user has granted to access the camera")
                     DispatchQueue.main.async {
-                        self.prepareQRScannerView(self.view)
                         self.startScanningQRCode()
                     }
                 } else {
