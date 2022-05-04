@@ -169,7 +169,10 @@ public class QRCodeScannerController: UIViewController, AVCaptureMetadataOutputO
         let alertController = UIAlertController(title: "Error",
                                                 message: "Camera access is denied",
                                                 preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .default))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .default) {_ in
+            self.dismissVC()
+        }
+        )
         alertController.addAction(UIAlertAction(title: "Settings", style: .cancel) { _ in
             if let url = URL(string: UIApplication.openSettingsURLString) {
                 if #available(iOS 10.0, *) {
