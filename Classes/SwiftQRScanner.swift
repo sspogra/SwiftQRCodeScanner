@@ -152,7 +152,7 @@ public class QRCodeScannerController: UIViewController, AVCaptureMetadataOutputO
             
         case .denied:
             print("the user has denied previously to access the camera.")
-            self.dismissVC()
+            self.presentCameraSettings()
             
         case .restricted:
             print("the user can't give camera access due to some restriction.")
@@ -162,6 +162,27 @@ public class QRCodeScannerController: UIViewController, AVCaptureMetadataOutputO
             print("something has wrong due to we can't access the camera.")
             self.dismissVC()
         }
+    }
+    
+    
+    func presentCameraSettings() {
+        let alertController = UIAlertController(title: "Error",
+                                                message: "Camera access is denied",
+                                                preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .default))
+        alertController.addAction(UIAlertAction(title: "Settings", style: .cancel) { _ in
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                if #available(iOS 10.0, *) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: { _ in
+                        // Handle
+                    })
+                } else {
+                    // Fallback on earlier versions
+                }
+            }
+        })
+        
+        present(alertController, animated: true)
     }
     
     /* This calls up methods which makes code ready for scan codes.
