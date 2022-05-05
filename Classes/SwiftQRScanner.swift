@@ -134,8 +134,9 @@ public class QRCodeScannerController: UIViewController, AVCaptureMetadataOutputO
         self.prepareQRScannerView(self.view)
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized: // the user has already authorized to access the camera.
-           
-            self.startScanningQRCode()
+            DispatchQueue.main.async {
+                self.startScanningQRCode()
+            }
             
         case .notDetermined: // the user has not yet asked for camera access.
             AVCaptureDevice.requestAccess(for: .video) { (granted) in
@@ -152,7 +153,9 @@ public class QRCodeScannerController: UIViewController, AVCaptureMetadataOutputO
             
         case .denied:
             print("the user has denied previously to access the camera.")
-            self.presentCameraSettings()
+            DispatchQueue.main.async {
+                self.presentCameraSettings()
+            }
             
         case .restricted:
             print("the user can't give camera access due to some restriction.")
@@ -347,8 +350,10 @@ public class QRCodeScannerController: UIViewController, AVCaptureMetadataOutputO
     }
     
     @objc func dismissVC() {
-        self.dismiss(animated: true, completion: nil)
-        delegate?.qrScannerDidCancel(self)
+        DispatchQueue.main.async {
+            self.dismiss(animated: true, completion: nil)
+            delegate?.qrScannerDidCancel(self)
+        }
     }
     
     //MARK: - Setup and start capturing session
