@@ -352,7 +352,7 @@ public class QRCodeScannerController: UIViewController, AVCaptureMetadataOutputO
     @objc func dismissVC() {
         DispatchQueue.main.async {
             self.dismiss(animated: true, completion: nil)
-            delegate?.qrScannerDidCancel(self)
+            self.delegate?.qrScannerDidCancel(self)
         }
     }
     
