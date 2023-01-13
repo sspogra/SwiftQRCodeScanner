@@ -360,7 +360,9 @@ public class QRCodeScannerController: UIViewController, AVCaptureMetadataOutputO
     
     open func startScanningQRCode() {
         if captureSession.isRunning { return }
-        captureSession.startRunning()
+        DispatchQueue.global(qos: .default).async {
+            self.captureSession.startRunning()
+        }
     }
     
     private func setupCaptureSession(_ devicePostion: AVCaptureDevice.Position) {
